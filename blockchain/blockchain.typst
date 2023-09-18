@@ -7,3 +7,78 @@
   doc,
 )
 
+#section("Distributed Systems Repetition")
+- Reasons for distributed systems
+  - scaling
+    Moores law can't go forever with big amounts of performance increases,\
+    hence we need horizontal scaling -> more servers in order to properly scale
+  - location
+    When you want to access a service from japan, you don't want to talk to a japanese server as the ping is atrocious.\
+    Instead, you talk to a server that is closer to you, e.g. Europe.
+- Categories of distributed systems
+  #columns(2, [
+  - #text(red, size: 15pt)[controlled distributed systems]
+    - 1 responsible organization
+    - low churn (rate of joining and leaving in a system (ex. adding or removing servers))
+    - examples: client/server systems, amazon dynamodb
+    - relatively friendly environment (not too many bad actors expected)
+    - high availability
+    - can be homogeneous or heterogeneous
+    - mechanisms that work well:
+      - Master nodes, central coordinator
+      - consistent hashing: Dynamodb, Cassandra
+    - Network is under control or client/server, no NAT issues
+    - Consistency
+      - leader election (Zookeeper, Paxos, Raft)
+    - Replication principles
+      - more replicas: higher availability, higher reliability, higher performance, better scalability
+      - requires maintaining consistency in replicas
+    - transparency principles apply
+  - #text(red, size: 15pt)[fully decentralized systems]
+    - N responsible organizations
+    - high churn
+    - examples: blockchain, torrents
+    - hostile environment
+    - unpredictable availability
+    - heterogeneous
+    - mechanisms that work well:
+      - consistent hashing: DHTs
+      - flooding/broadcasting - Bitcoin
+    - NAT connection problems 
+    - Consistency
+      - weak consistency: DHTs
+      - Nakamo Consensus ( Proof of Work )
+      - Proof of Stake - leadership election, PBFT protocols
+        - experts unsure
+    - replication principles apply
+    - transparency principles apply
+  ])
+
+#subsection("Comparison to Blockchain")
+In blockchain we are working with _loosely coupled_ systems that are _heterogeneous_, _decentralized_ and _large-scale systems_.\
+This is the second category above.\
+
+#subsection("Monorepo vs Polyrepo")
+#columns(2, [
+#text(red, size: 15pt)[MonoRepo]
+- tight coupling of projects
+  - code can easily be reused
+- everyone sees all code / commits
+- encourages code sharing within organization
+- scaling: large repos, specialized tooling (rather bad)
+#colbreak()
+#text(red, size: 15pt)[PolyRepo]
+- loose coupling
+  - API etc to access other projects, needs to be updated on both sides
+- fine grained access control
+- encourages code sharing _across_ origanizations
+- scaling: many projects, special coordination
+])
+
+#subsection("0RTT Connection")
+Sends params directly with connection in order to avoid handshakes -> already confirmed to be authentic.
+#align(center, [#image("../Screenshots/2023_09_18_02_40_35.png", width: 70%)])
+#align(center, [#image("../Screenshots/2023_09_18_02_41_36.png", width: 70%)])
+
+
+
