@@ -1,9 +1,0 @@
-#import "../template.typst": *
-
-#show: doc => conf(
-  author: "Fabio Lenherr",
-  "Web Engineering 3",
-  "summary",
-  doc,
-)
-
