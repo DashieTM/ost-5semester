@@ -313,7 +313,7 @@ This is handled with the bool return on each lexer.
     - values too big or too small
   - error  handling
     - panic mode: exceptions
-    - #text(teal)[return error token (please use this)] 
+    - #text(teal)[return error token (please use this)]
     - autocorrect, replace etc.
 
 #subsubsection("Lexer Generators")
@@ -330,3 +330,14 @@ Usage:
 // Digit: [0-9];
 // Whitespaces: [ \t\r\n]+ -> skip;
 ```
+#columns(2, [
+benefits:
+- less programming
+- less silly mistakes
+#colbreak()
+negatives:
+- errors often unclear
+- temporary view is predefined
+- verbose generated code
+- dependency on tooling
+])
