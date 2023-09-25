@@ -1,12 +1,6 @@
 #import "../template.typ": *
 
-#show: doc => conf(
-  author: "Fabio Lenherr",
-  "Compilers",
-  "summary",
-  doc,
-)
-
+#show: doc => conf(author: "Fabio Lenherr", "Compilers", "summary", doc)
 
 #section("The 3 architectures")
 - system languages
@@ -15,7 +9,8 @@
 
 #subsection("System languages")
 Compiler -> Machine code\
-byte code languages -> compiler -> byte code -> JIT(just in time) compiler -> runtime\
+byte code languages -> compiler -> byte code -> JIT(just in time) compiler ->
+runtime\
 runtime languages -> JIT compiler -> runtime
 
 #section("Compiler architecture")
@@ -31,17 +26,18 @@ runtime languages -> JIT compiler -> runtime
 - #text(red, size: 15pt)[code generation]
   - machine code / byte code etc, depends on language architecture
 - #text(red, size: 15pt)[temporary view] (intermediate representation)
-  - defines code as data structure -> machine code 
+  - defines code as data structure -> machine code
 
 #section("Runtime")
 #align(center, [#image("../Screenshots/2023_09_18_08_43_01.png", width: 30%)])
-- #text(red, size: 15pt)[loader] 
+- #text(red, size: 15pt)[loader]
   - loads machine code into memory, starts execution
-- #text(red, size: 15pt)[Interpreter] 
+- #text(red, size: 15pt)[Interpreter]
   - reads instructions and emulates this software
-- #text(red, size: 15pt)[JIT (Just In Time) Compiler] 
+- #text(red, size: 15pt)[JIT (Just In Time) Compiler]
   - translates code into hardware instructions
-  - this is the entire reason why js is cross platform. A JIT exists for every platform.
+  - this is the entire reason why js is cross platform. A JIT exists for every
+    platform.
 - #text(red, size: 15pt)[Hardware instruction -> native instruction]
   - instruction supported natively on hardware
 - #text(red, size: 15pt)[metadata, heap + stack]
@@ -54,26 +50,39 @@ runtime languages -> JIT compiler -> runtime
   - defines forms and rules for language
   - defined by
     - amount of tokens/terminalsymbols
-    - amount of non-terminal symbols (tokens that have multiple meanings -> result of a production)
+    - amount of non-terminal symbols (tokens that have multiple meanings -> result of
+      a production)
     - amount of productions (syntax rule)
     - start symbol
-  
+
 - #text(red, size: 15pt)[Semantic]
   - defines meaning of program
 
 #section("EBNF (Extended Backus-Naur Form)")
 This is the grammar definition language.\
-It can be used to create things like calculators or syntax rules for programming languages.\
+It can be used to create things like calculators or syntax rules for programming
+languages.\
 #columns(2, [
-#align(center, [#image("../Screenshots/2023_09_18_09_08_39.png", width: 100%)])
-#colbreak()
-#align(center, [#text(red, size: 15pt)[Rules for EBNF]])
-#align(center, [#image("../Screenshots/2023_09_18_09_09_15.png", width: 100%)])
+  #align(
+    center,
+    [#image("../Screenshots/2023_09_18_09_08_39.png", width: 100%)],
+  )
+  #colbreak()
+  #align(center, [#text(red, size: 15pt)[Rules for EBNF]])
+  #align(
+    center,
+    [#image("../Screenshots/2023_09_18_09_09_15.png", width: 100%)],
+  )
 ])
-- #text(teal, size: 12pt)[Original Backus Naur form with := instead of = and without repeatable tokens] 
-- #text(teal, size: 12pt)[ISO Version with semicolon at the end -> something = \[ "(" something ")" \]];
+- #text(
+    teal,
+    size: 12pt,
+  )[Original Backus Naur form with := instead of = and without repeatable tokens]
+- #text(
+    teal,
+    size: 12pt,
+  )[ISO Version with semicolon at the end -> something = \[ "(" something ")" \]];
 - #text(teal, size: 12pt)[ABNF -> Augmented Backus Naur Form];
-
 
 Special cases:\
 - """ -> this is considered to be a token/terminalsymbol
@@ -85,32 +94,239 @@ Special cases:\
 #subsection("Example Grammar for calculator")
 ```rs
  // standard grammar for calculator
- // made with original Backus Naur Form -> this version has no repeatable tokens 
+ // made with original Backus Naur Form -> this version has no repeatable tokens
  // exp := term | exp + term | exp - term
  // term := factor | factor * term | factor / term | factor % term
  // factor := number | ( exp )
 ```
 compared to a simpler example: (not a full calculator)
-#columns(2, [
-#image("../Screenshots/2023_09_18_09_22_56.png", width: 70%)
-#colbreak()
-Here the optional parts are marked with {} which makes the grammar smaller, however it also makes it harder to read imo.\
-])
+#columns(
+  2,
+  [
+    #image("../Screenshots/2023_09_18_09_22_56.png", width: 70%)
+    #colbreak()
+    Here the optional parts are marked with {} which makes the grammar smaller,
+    however it also makes it harder to read imo.\
+  ],
+)
 
 #subsection("Ambiguous Syntax")
-#columns(2, [
-#align(center, [#image("../Screenshots/2023_09_18_09_41_40.png", width: 100%)])
-The issue is that there is no clear rule which expression to evaluate first.\
-Here one would have to change the first expression to number in order to fix this issue.
-#colbreak()
-#align(center, [#image("../Screenshots/2023_09_18_09_42_10.png", width: 100%)])
-])
+#columns(
+  2,
+  [
+    #align(
+      center,
+      [#image("../Screenshots/2023_09_18_09_41_40.png", width: 100%)],
+    )
+    The issue is that there is no clear rule which expression to evaluate first.\
+    Here one would have to change the first expression to number in order to fix
+    this issue.
+    #colbreak()
+    #align(
+      center,
+      [#image("../Screenshots/2023_09_18_09_42_10.png", width: 100%)],
+    )
+  ],
+)
 
+#section("lexical analysis")
+What does a lexer do?
+- turns program code into tokens
+- eliminates whitespaces, comments and other useless characters for compiler
+- marks positions in programcode for error propagation to user -> LSP, debugging
 
+Uses of a lexer
+- abstraction
+  - parser has guarantee that tokens are already generated
+- simplicity
+  - parser uses lookahead per token, not per character
+- efficiency
+  - lexer doesn't use stack, unlike parser -> next tokens etc.
 
+#subsection("Lexem")
+a specific series of characters that represent a token.\
+For example "MyStruct" is the lexem for a specific struct token.
 
+#subsubsection("Lexer language support")
+Lexers only support regular languages, this means that *only non-recursive
+languages are supported.*\
+Note, this is specific to tokens, *multiple tokens can later be parsed into a
+non-regular language*.\
+#align(center, [#image("../Screenshots/2023_09_25_08_17_57.png", width: 70%)])
+#align(center, [#image("../Screenshots/2023_09_25_08_20_00.png", width: 50%)])
 
+Note, sometimes languages can be restructured, which can lead to a language not
+being regular, or being regular:
+#align(center, [#image("../Screenshots/2023_09_25_08_22_16.png", width: 50%)])
+#text(
+  teal,
+)[Note the note below, pumping lemma for proving a language not to be regular.]
 
+#subsubsection("Lexer Tokens")
+#subsubsubsection("Identifier")
+- identifier for classes, methods, variables etc
+- starts with a character, after that numbers are allowed
+  - no whitespace allowed though!
+```rs
+//Identifier = Letter { Letter | Digit }.
+//Letter = "A" | ... | "Z" | "a" | ... | "z".
+//Digit = "0" | ... | "9".
+```
 
+#subsubsection("lexer as finite automaton")
+A lexer absorbes as much as possible from the input to a token.\
+This means that something like "my1234Name" will all convert into an identifier,
+not into identifier, number, identifier.
+#align(center, [#image("../Screenshots/2023_09_25_08_27_30.png", width: 50%)])
 
+#subsubsection("Comments in lexer")
+- are skipped by lexer
+- can be blocks
+  - however, can't be boxed -> not recursive, again, lexer only supports regular
+    languages
+- or can be a line -> \/\/ end of line defines end of comment
 
+#subsubsection("Tokens in lexer")
+#align(center, [#image("../Screenshots/2023_09_25_08_33_31.png", width: 70%)])
+- FixToken These are tokens that represent reserved *keywords or operators*. ```rs
+   pub Enum Tag {
+   CLASS, ELSE, IF, RETURN, WHILE, // keywords
+   AND, OR, PLUS, MINUS, SEMICOLON // operators
+   }
+   ```
+  #text(
+    teal,
+  )[Note, reserved typenames should be considered to be identifiers instead!]
+- IdentifierToken variables, method names etc
+- IntegerToken token for int value
+- StringToken token for string value
+- ...
+
+#align(center, [#image("../Screenshots/2023_09_25_08_42_11.png", width: 70%)])
+each token is read by one lexer that is specific for this token.
+
+#subsubsection("Lexer Example")
+```cs
+class CharReader {
+  int Position { get; }
+  char Current { get; }
+  bool End { get; }
+  SourceReader(TextReader reader) {
+      // ...
+  }
+  void Next() {}
+}
+```
+Lexer class:// typstfmt::off
+```cs
+class Lexer {
+  private IEnumerable<Token> Lex(TextReader reader, …) {
+    var source = new SourceReader(reader);
+    var tokenLexers = new TokenLexer[]{
+    new NameTokenLexer(source, diagnostics),
+    new IntegerTokenLexer(source, diagnostics),
+    new FixTokenLexer(source, diagnostics),
+    new SlashTokenLexer(source, diagnostics),
+    new StringTokenLexer(source, diagnostics)
+  };
+  source.Next();
+  One character lookahead
+  SkipBlanks(source);
+  while (!source.End) {
+    if (TryLexToken(…, out var token)) yield return token!;
+  else { // ... error
+    SkipBlanks(source);
+  }
+}
+
+// eliminate whitespaces
+private bool TryLexToken(tokenLexers, out Token? token) {
+  foreach (var lexer in tokenLexers) {
+    if (lexer.TryLex(out token)) return true;
+    // ...
+  } // ...
+    return false;
+}
+```
+
+IntegerTokenLexer:
+```cs
+private bool IntegerTokenLexer() {
+  if (!IsDigit()) {
+    token = default;
+    return false;
+  }
+  int value = 0;
+  while (!IsEnd && IsDigit()) {
+    int digit = Current - '0’;
+    value = value * 10 + digit;
+    // note, here should check for values that are too big
+    Next();
+  }
+  token = new IntegerToken(value);
+  return true;
+}
+```
+NameTokenLexer:
+```cs
+private bool NameTokenLexer() {
+  if (!IsLetter()) {
+    token = default;
+    return false;
+  }
+  string name = Current.ToString();
+  Next();
+  while (!IsEnd && (IsLetter() || IsDigit())) {
+    name += Current;
+    Next();
+  }
+  token = Keywords.TryGetValue(name, out var tag) ? new FixToken(tag) : new IdentifierToken(name);
+  return true;
+}
+```
+Remove Comments:
+```cs
+private void SkipLineComment() {
+  Next(); // skip second slash
+  while (!IsEnd && Current != '\n’) {
+    Next();
+  }
+}
+```
+// typstfmt::on
+General mechanism, the out parameter is the stream of code, which will then be used on each lexer individually until one lexer matches and creates a token.\
+This is handled with the bool return on each lexer.
+
+#subsubsection("Lexer Expansions")
+- keep track of line
+  - for errors and debugging
+  - save line in tokens
+- extras in other languages
+  - character literals instead of strings
+  - string/character escaping
+  - hex or other values
+  - floats
+- error handling
+  - errors
+    - unexpected end of token
+    - string or comment not terminated
+    - values too big or too small
+  - error  handling
+    - panic mode: exceptions
+    - #text(teal)[return error token (please use this)] 
+    - autocorrect, replace etc.
+
+#subsubsection("Lexer Generators")
+These tools can generate lexers for a specific language.
+#align(center, [#image("../Screenshots/2023_09_25_09_10_08.png", width: 70%)])
+Usage:
+```rs
+// grammar SmallJ;
+//  // lexer rules
+// Identifier: Letter (Letter | Digit)*;
+// Integer: Digit+;
+// String: '"' .* '"';
+// Letter: [A-Za-z];
+// Digit: [0-9];
+// Whitespaces: [ \t\r\n]+ -> skip;
+```
