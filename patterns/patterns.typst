@@ -7,3 +7,21 @@
   doc,
 )
 
+#section("Pattern Definition")
+- addresses a common problem
+  - specifically why a problem is hard (*forces*)
+- *generic solutions* that can be adapted
+- describes benefits and liabilities
+- gets a name, so we can talk about it
+
+Note:
+- patterns often depend on each other
+  - sometimes extend each other
+  - or implement parts of it
+- are never completely alone -> always exist in environment
+
+#section("GoF Great of Four")
+#align(center, [#image("../Screenshots/2023_09_22_09_30_09.png", width: 70%)])
+
+
+
