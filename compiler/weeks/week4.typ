@@ -177,3 +177,5 @@ Powerfulness:
   center,
   [#image("../../Screenshots/2023_10_09_09_18_00.png", width: 60%)],
 )
+
+
