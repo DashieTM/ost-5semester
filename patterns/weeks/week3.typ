@@ -188,28 +188,3 @@ iterate on our local machine.
   center,
   [#image("../../Screenshots/2023_10_06_09_51_15.png", width: 50%)],
 )
-
-#subsection([State Pattern (for objects)])
-#text(red)[often misunderstood]
-#set text(size: 14pt)
-
-Problem | Allow an object to alter its behavior when its internal state changes.
-The object will appear to change its class.\
-Context | Behavior should change depending on state without needing 10000 if
-statements(aka not yandere dev)\
-
-#set text(size: 11pt)
-// images
-#align(
-  center,
-  [#image("../../Screenshots/2023_10_06_09_57_36.png", width: 80%)],
-)
-
-#columns(2, [
-  #text(green)[Benefits]
-  -
-  #colbreak()
-  #text(red)[Liabilities]
-  - fixed structure -> lot of work when changed
-    - similar to visitor pattern
-])
