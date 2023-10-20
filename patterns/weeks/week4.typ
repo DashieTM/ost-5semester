@@ -151,17 +151,17 @@ There are 3 kinds of individuals:
 - entity
   - express system information, typicall of *persisten nature*.
   - identity distinguishes an entity from another
-  - example:
+  - example: some custom class
 - service
   - represent *system activities*
   - Services are *distinguished by their behavior* rather than their state or
     content
-  - example:
+  - example: 
 - values
   - *the content is the dominant behavior* -> value is more important than the rest
     -> weight -> kg is just something to make it easier for us to interpret
   - transient: 5kg is always 5kg, no other interpretation
-  - example: 
+  - example: value weight
 - task
   - *like services, but with a representation of identity and state*
   - example: threads
