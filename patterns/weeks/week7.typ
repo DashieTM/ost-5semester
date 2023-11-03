@@ -152,6 +152,7 @@ Solution | Create a bridge method or struct that converts the property list to
 static properties, usually done with Optional\<T\> or using default values.
 #set text(size: 11pt)
 // images
+Java example: -> this is via byte code patching -> not a bridge struct like rust
 #align(
   center,
   [#image("../../Screenshots/2023_11_03_10_03_49.png", width: 80%)],
