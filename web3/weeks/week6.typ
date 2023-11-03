@@ -59,6 +59,7 @@ Example module declaration: ```ts
  CommonModule
  ],
  declarations: []
+ exports: []
 })
 export class CoreModule { }
 ``` Declarations and notation:
@@ -83,12 +84,51 @@ Consists of:
   - declares the visual interface in HTML and a mustache-based template expression
     syntax -> handlebars
 - an scss file for styling
+- Lifecycle managed by Angular
+  - Create (Hydration)
+  - Update
+  - Destroy (Dehydration)
+  - hooks for lifecycle events
 
 Components are similar to react with a few key differences like annotation
 instead of inheritance -> likely because angular is older, lol.\
 - components can be nested -> tree just like jsx
 - reusability
 - components are part of an ngModule which usually declare multiple components
+
+Example component://typstfmt::off
+```ts
+import { Component } from '@angular/core';
+  @Component({
+  selector: 'wed-navigation',
+  templateUrl: './navigation.component.html',
+  styleUrls: ['./navigation.component.css']
+})
+export class NavigationComponent {
+  // logic
+}
+```
+//typstfmt::on
+
+Usage in Module:
+//typstfmt::off
+```ts
+@NgModule({
+  declarations: [
+    NavigationComponent
+  ],
+  imports: [
+    CommonModule
+  ] ,
+  exports: [
+    NavigationComponent
+  ],
+  providers: []
+})
+export class SharedModule { }
+```
+//typstfmt::on
+
 
 #subsubsection("Code Example")
 HTML://typstfmt::off
