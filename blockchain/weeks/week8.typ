@@ -196,8 +196,10 @@ Prevention:
 #subsection("Redundancy")
 #subsubsection("Replication")
 - one originator and responsible node
+  - periodically update peers
 - all others are peers
 - main nodes goes offline -> TTL then value dropped and no longer available
+- example usage: tracker that announces data
 #align(
   center,
   [#image("../../Screenshots/2023_11_06_02_37_43.png", width: 100%)],
@@ -225,10 +227,12 @@ Prevention:
 - Same time (time in distributed systems):
   - Peer C gets X.1
   - Peer C modifies it puts C.2
+- last to modify wins -> inconsistency -> see database module
 - Replication makes it worse
   - Consistency: generic issue in distributed systems,requires typically coordinator
 - Multi-Paxos, Raft, ZooKeeper → Leader Election
 
+#subsubsection("Solution for light churn")
 #align(
   center,
   [#image("../../Screenshots/2023_11_06_02_45_47.png", width: 50%)],
