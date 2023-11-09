@@ -9,5 +9,5 @@
 #include "weeks/week5.typ"
 #include "weeks/week6.typ"
 #include "weeks/week7.typ"
-//#include "weeks/week8.typ"
+#include "weeks/week8.typ"
 //#include "weeks/week9.typ"
