@@ -11,3 +11,8 @@
 //#include "weeks/week7.typ"
 //#include "weeks/week8.typ"
 //#include "weeks/week9.typ"
+// #include "weeks/week10.typ"
+// #include "weeks/week11.typ"
+// #include "weeks/week12.typ"
+// #include "weeks/week13.typ"
+// #include "weeks/week14.typ"
