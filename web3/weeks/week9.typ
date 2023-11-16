@@ -175,10 +175,6 @@ Example:\
   center,
   [#image("../../Screenshots/2023_11_16_05_41_24.png", width: 80%)],
 )
-#align(
-  center,
-  [#image("../../Screenshots/2023_11_16_05_48_44.png", width: 80%)],
-)
 
 #subsection("Root Module")
 - provides main view -> root component
@@ -218,13 +214,13 @@ subcategories:
 - only the root module should import the core module
   - guard against imports:
   ```ts
-          constructor (@Optional() @SkipSelf() parentModule: CoreModule) {
-            if (parentModule) {
-              throw new Error(
-                'CoreModule is already loaded. Import it in the AppModule only.');
-            }
-          }
-          ```
+                constructor (@Optional() @SkipSelf() parentModule: CoreModule) {
+                  if (parentModule) {
+                    throw new Error(
+                      'CoreModule is already loaded. Import it in the AppModule only.');
+                  }
+                }
+                ```
 
 #subsection("Lazy Modules")
 - Provides similar features as Feature Modules but not loaded at start
@@ -233,3 +229,19 @@ subcategories:
   - Required because the Root DI container mustn’t be modified after the
     initialization
 - May cause some strange behavior if forRoot() rules are violated
+
+Dependency injection due to reloading of other modules when modules inside of
+root container change -> Aka there is never an addition or removal of a module,
+the addition happens within the root DI container that already exists. And the
+lazy modules are loaded to this already loaded container.
+#align(
+  center,
+  [#image("../../Screenshots/2023_11_16_05_48_44.png", width: 80%)],
+)
+#text(
+  teal,
+)[In order to not double define providers, you need to import with forRoot on
+  feature modules that have lazy modules as a child component. The reason is, if
+  you don't do that, then the root module, which in this case would be the Root DI
+  container, will import everything and therefore configure the service again with
+  the lazy load, which leads to a dualton instead of a singleton.]
