@@ -163,7 +163,7 @@ $E(X) = text("Var")(X)=mu$\
   [#image("../../Screenshots/2023_11_09_04_26_08.png", width: 100%)],
 )
 
-#subection("Possion and Binomial")
+#subsection("Possion and Binomial")
 With *np 10 or below and n 1500 or above* for the binomial distribution, you can
 set the poission and binomial distribution to be equal:
 #align(
@@ -178,5 +178,5 @@ set the poission and binomial distribution to be equal:
 )
 #align(
   center,
-  [#image("../../Screenshots/2023_11_09_04_26_53.png", width: 100%)],
+  [#image("../../Screenshots/2023_11_09_04_26_52.png", width: 100%)],
 )

@@ -349,10 +349,11 @@ public sampleService:SampleService) {
   )
 
 #section("Ahead-Of-Time Compilation (AOT))")
-- meaningless name...
+- meaningless name... -> it's just regular compilation
 - Angular uses a compiler to translate components/services into browser executable code
-- usually, compiler is delivered to the client
+- until angular 8 compiler was delivered to the client
   - allows for dynamic JIT compilation
+  - now aot with webpack
 - compiler is about 60% of the angular package
 - pre-compiling is possible to reduce size
 - enabled by default
