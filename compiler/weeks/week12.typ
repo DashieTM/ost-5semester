@@ -161,7 +161,7 @@ There are different incremental GCs:
 - Write barriers
   - writing of references in old generations must be noticed
   - aka no references are allowed to be written into older generations
-  - software wise: ?
+  - software wise: (use of hardware instruction aligned code -> Atomics, barriers, Semaphores)
   - hardware wise: Page faults via memory access rights
 - Garbage collector of older generation must also clear younger generation
   - G2 gets cleared -> G1 and G0 must also be cleared
