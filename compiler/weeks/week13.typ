@@ -11,76 +11,62 @@
 The interpreter keeps track of the amount of times a specific code section is
 being run. -> Via methods and traces.
 #align(
-  center,
-  [#image("../../Screenshots/2023_12_11_08_18_23.png", width: 60%)],
+  center, [#image("../../Screenshots/2023_12_11_08_18_23.png", width: 60%)],
 )
 #align(
-  center,
-  [#image("../../Screenshots/2023_12_11_08_18_46.png", width: 60%)],
+  center, [#image("../../Screenshots/2023_12_11_08_18_46.png", width: 60%)],
 )
 
 #subsection("Intel 64 architecture")
 - 14 general registers
 #align(
-  center,
-  [#image("../../Screenshots/2023_12_11_08_19_25.png", width: 60%)],
+  center, [#image("../../Screenshots/2023_12_11_08_19_25.png", width: 60%)],
 )
 #align(
-  center,
-  [#image("../../Screenshots/2023_12_11_08_19_48.png", width: 100%)],
+  center, [#image("../../Screenshots/2023_12_11_08_19_48.png", width: 100%)],
 )
 - special registers
 #align(
-  center,
-  [#image("../../Screenshots/2023_12_11_08_20_13.png", width: 70%)],
+  center, [#image("../../Screenshots/2023_12_11_08_20_13.png", width: 70%)],
 )
 - media registers -> 64, 128 and 256 bit
 - floating point registers -> double etc.
 
 #subsubsection("Callstack")
 #align(
-  center,
-  [#image("../../Screenshots/2023_12_11_08_25_36.png", width: 100%)],
+  center, [#image("../../Screenshots/2023_12_11_08_25_36.png", width: 100%)],
 )
 
 #subsubsection("Mov")
 #align(
-  center,
-  [#image("../../Screenshots/2023_12_11_08_26_18.png", width: 70%)],
+  center, [#image("../../Screenshots/2023_12_11_08_26_18.png", width: 70%)],
 )
 
 #subsubsection("Aithmetic Instructions")
 #align(
-  center,
-  [#image("../../Screenshots/2023_12_11_08_26_39.png", width: 100%)],
+  center, [#image("../../Screenshots/2023_12_11_08_26_39.png", width: 100%)],
 )
 #align(
-  center,
-  [#image("../../Screenshots/2023_12_11_08_31_43.png", width: 80%)],
+  center, [#image("../../Screenshots/2023_12_11_08_31_43.png", width: 80%)],
 )
 #align(
-  center,
-  [#image("../../Screenshots/2023_12_11_08_32_38.png", width: 70%)],
+  center, [#image("../../Screenshots/2023_12_11_08_32_38.png", width: 70%)],
 )
 
 #subsubsection("Jumps")
 #align(
-  center,
-  [#image("../../Screenshots/2023_12_11_09_16_57.png", width: 100%)],
+  center, [#image("../../Screenshots/2023_12_11_09_16_57.png", width: 100%)],
 )
 #align(
-  center,
-  [#image("../../Screenshots/2023_12_11_09_17_57.png", width: 100%)],
+  center, [#image("../../Screenshots/2023_12_11_09_17_57.png", width: 100%)],
 )
 
 #subsection("Conversion")
 #align(
-  center,
-  [#image("../../Screenshots/2023_12_11_08_40_02.png", width: 70%)],
+  center, [#image("../../Screenshots/2023_12_11_08_40_02.png", width: 70%)],
 )
 #align(
-  center,
-  [#image("../../Screenshots/2023_12_11_08_40_16.png", width: 70%)],
+  center, [#image("../../Screenshots/2023_12_11_08_40_16.png", width: 70%)],
 )
 
 #subsection("Local and Global Registers")
@@ -96,8 +82,7 @@ being run. -> Via methods and traces.
   - first 4 parameters for winshit: RCS, RDX, R8, R9
   - first 6 parameters for unix: RDI, RSI, RDX, RCX, R8, R9
 #align(
-  center,
-  [#image("../../Screenshots/2023_12_11_09_18_31.png", width: 40%)],
+  center, [#image("../../Screenshots/2023_12_11_09_18_31.png", width: 40%)],
 )
 #align(center, [
   #text(red)[load variable]
@@ -109,8 +94,7 @@ being run. -> Via methods and traces.
 ])
 #text(red)[JIT]
 #align(
-  center,
-  [#image("../../Screenshots/2023_12_11_09_19_49.png", width: 60%)],
+  center, [#image("../../Screenshots/2023_12_11_09_19_49.png", width: 60%)],
 )
 ```cs
 switch (opCode) {
@@ -163,12 +147,10 @@ switch (opCode) {
 One problem is that different branches might want to use different registers, in
 that case you might need to move values to these registers:
 #align(
-  center,
-  [#image("../../Screenshots/2023_12_11_09_32_41.png", width: 100%)],
+  center, [#image("../../Screenshots/2023_12_11_09_32_41.png", width: 100%)],
 )
 #align(
-  center,
-  [#image("../../Screenshots/2023_12_11_09_32_53.png", width: 100%)],
+  center, [#image("../../Screenshots/2023_12_11_09_32_53.png", width: 100%)],
 )
 ```cs
 switch (opCode) {
@@ -184,3 +166,8 @@ switch (opCode) {
   // ...
 }
 ```
+
+#subsubsection("Register runout")
+When using JIT, you might run into the issue of running out of registers,
+solutions include pushing temporary values to the stack and pushing local
+variables and parameters to the stack.
