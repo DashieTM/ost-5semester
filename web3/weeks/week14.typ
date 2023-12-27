@@ -52,10 +52,11 @@ The reason for the 0x1 address is the overlap of an i32 -> 0x0 is the start and
 leaving you with 2 weird integers with unexpected values.
 
 #subsection("Table")
-A resizable typed array of references (e.g. to functions) that could not otherwise be stored as raw bytes in
-Memory (for safety and portability reasons)
-#align(center, [#image("../../Screenshots/2023_12_27_03_34_03.png", width: 100%)])
-
+A resizable typed array of references (e.g. to functions) that could not
+otherwise be stored as raw bytes in Memory (for safety and portability reasons)
+#align(
+  center, [#image("../../Screenshots/2023_12_27_03_34_03.png", width: 100%)],
+)
 
 #subsection("Instance")
 ```js
@@ -83,3 +84,15 @@ const instance2 = new WebAssembly.Instance(mod, importObject2); // second instan
 instance2.exports.exported_func();
 });
 ```
+
+#section("Blazor")
+Basic blazor allows for server side rendering with client side rendering
+features via sockets.
+#align(
+  center, [#image("../../Screenshots/2023_12_27_03_42_33.png", width: 100%)],
+)
+#align(
+  center, [#image("../../Screenshots/2023_12_27_03_42_56.png", width: 100%)],
+)
+
+- server side rendering
