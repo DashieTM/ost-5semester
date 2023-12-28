@@ -9,13 +9,11 @@ Context | How can *commands be encapsulated*, so that they can be
 *parameterized, schedules, logged and/or undone*? Can also be seen as mapping a
 function to something like a button on a controller -> SpiritOfMars!
 #align(
-  center,
-  [#image("../../Screenshots/2023_10_06_08_45_09.png", width: 80%)],
+  center, [#image("../../Screenshots/2023_10_06_08_45_09.png", width: 80%)],
 )
 
 #columns(
-  2,
-  [
+  2, [
     #text(green)[Benefits]
     - command can be activated from different sources
     - new commands can be introduced relatively quickly
@@ -45,23 +43,61 @@ Participants :
     processor
 #set text(size: 11pt)
 #align(
-  center,
-  [#image("../../Screenshots/2023_10_06_08_52_25.png", width: 80%)],
+  center, [#image("../../Screenshots/2023_10_06_08_52_25.png", width: 80%)],
 )
 #align(
-  center,
-  [#image("../../Screenshots/2023_10_06_08_54_50.png", width: 80%)],
+  center, [#image("../../Screenshots/2023_10_06_08_54_50.png", width: 80%)],
 )
+```java
+// CommandProcessor
+import org.jetbrains.annotations.NotNull;
+import java.util.Stack;
+public class CommandProcessor {
+  private final Stack<Command> commandStack = new Stack<>();
 
-#columns(2, [
-  #text(green)[Benefits]
-  - flexibility
-  - command processor allows more than just execution -> logging, undo etc
-  - enhances testability
-  #colbreak()
-  #text(red)[Liabilities]
-  - efficiency loss due to indirection
-])
+  public void doIt(@NotNull Command c) {
+    commandStack.push(c);
+    c.doCommand();
+  }
+
+  public void undoIt() {
+    commandStack.pop().undoCommand();
+  }
+}
+
+// Command
+public interface Command {
+  void doCommand();
+  void undoCommand();
+}
+
+// Capitalize Command
+public class CapitalizeCommand implements Command {
+  @Override
+  public void doCommand() {
+    // getSelection()
+    // capitalize()
+  }
+
+  @Override
+  public void undoCommand() {
+    // restoreText()
+  }
+
+}
+```
+
+#columns(
+  2, [
+    #text(green)[Benefits]
+    - flexibility
+    - command processor allows more than just execution -> logging, undo etc
+    - enhances testability
+    #colbreak()
+    #text(red)[Liabilities]
+    - efficiency loss due to indirection
+  ],
+)
 
 #subsection("Visitor Pattern")
 #set text(size: 14pt)
@@ -83,17 +119,73 @@ Participants :
   - struct that will be changed by visitor
 #set text(size: 11pt)
 #align(
-  center,
-  [#image("../../Screenshots/2023_10_06_09_08_33.png", width: 80%)],
+  center, [#image("../../Screenshots/2023_10_06_09_08_33.png", width: 80%)],
 )
 #align(
-  center,
-  [#image("../../Screenshots/2023_10_06_09_13_27.png", width: 80%)],
+  center, [#image("../../Screenshots/2023_10_06_09_13_27.png", width: 80%)],
 )
 
+```java
+// Leaf
+import org.jetbrains.annotations.NotNull;
+import ch.ost.pf.visitor.Visitor;
+public class Leaf extends Component {
+  @Override
+  public void accept(@NotNull Visitor visitor) {
+    visitor.visitLeafStart(this);
+    visitor.visitLeafEnd(this);
+  }
+}
+
+// Component
+import org.jetbrains.annotations.NotNull;
+import ch.ost.pf.visitor.Visitor;
+public abstract class Component {
+  @NotNull
+  public String getName() {
+    return getClass().getSimpleName();
+  }
+
+  public abstract void accept(@NotNull Visitor visitor);
+}
+
+// Composite
+import java.util.ArrayList;
+import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import ch.ost.pf.visitor.Visitor;
+public class Composite extends Component {
+  private final ArrayList<Component> components = new ArrayList<>();
+
+  @NotNull
+  public List<Component> getChildren(){
+    return components;
+  }
+
+  @Override
+  public void accept(@NotNull Visitor visitor) {
+    visitor.visitCompositeStart(this);
+    getChildren().forEach((c) -> c.accept(visitor));
+    visitor.visitCompositeEnd(this);
+  }
+}
+
+// Visitor
+import ch.ost.pf.visitor.tree.Composite;
+import ch.ost.pf.visitor.tree.Leaf;
+import org.jetbrains.annotations.NotNull;
+
+public interface Visitor {
+  void visitLeafStart(@NotNull Leaf leaf);
+  void visitLeafEnd(@NotNull Leaf leaf);
+
+  void visitCompositeStart(@NotNull Composite comp);
+  void visitCompositeEnd(@NotNull Composite comp);
+}
+```
+
 #columns(
-  2,
-  [
+  2, [
     #text(green)[Benefits]
     - adding new operations relatively easy
     - seperates operations from unrelated ones
@@ -108,14 +200,74 @@ Participants :
   ],
 )
 
+XML visitor example:
+```java
+import ch.ost.pf.visitor.tree.Component;
+import ch.ost.pf.visitor.tree.Composite;
+import ch.ost.pf.visitor.tree.Leaf;
+import org.jetbrains.annotations.NotNull;
+
+public class XmlVisitor implements Visitor {
+  private final StringBuffer buffer = new StringBuffer();
+
+  @Override
+  public void visitLeafStart(@NotNull Leaf leaf) {
+    visitComponentStart(leaf);
+  }
+
+  @Override
+  public void visitLeafEnd(@NotNull Leaf leaf) {
+    visitComponentEnd(leaf);
+  }
+
+  @Override
+  public void visitCompositeStart(@NotNull Composite comp) {
+    if (comp.getChildren().size() != 0) {
+      buffer.append("<");
+      buffer.append(comp.getName());
+      buffer.append(">\n");
+    }
+    else {
+      visitComponentStart(comp);
+    }
+  }
+
+  @Override
+  public void visitCompositeEnd(@NotNull Composite comp) {
+    if (comp.getChildren().size() != 0) {
+      buffer.append("</");
+      buffer.append(comp.getName());
+      buffer.append(">\n");
+    }
+    else {
+      visitComponentEnd(comp);
+    }
+  }
+
+  @Override
+  public String toString() {
+    return buffer.toString();
+  }
+
+  private void visitComponentStart(Component comp) {
+    buffer.append("<");
+    buffer.append(comp.getName());
+  }
+
+  private void visitComponentEnd(Component comp) {
+    buffer.append(" />\n");
+  }
+}
+```
+
 #subsection([External Iterator Pattern])
 
 #set text(size: 14pt)
 
-Problem | Iteration depends on the target implementation -> should be seperate
-to allow multiple iteration strategies. (aka iterator should be a seperate
+Problem | Iteration depends on the target implementation -> should be separate
+to allow multiple iteration strategies. (aka iterator should be a separate
 struct)\
-Context | Bounded buffer represented with pointers -> seperate iterator struct
+Context | Bounded buffer represented with pointers -> separate iterator struct
 in order to not change structure directly.\
 Participants :
 - Base struct
@@ -123,8 +275,7 @@ Participants :
 #set text(size: 11pt)
 // images
 #align(
-  center,
-  [#image("../../Screenshots/2023_10_06_09_31_54.png", width: 80%)],
+  center, [#image("../../Screenshots/2023_10_06_09_31_54.png", width: 80%)],
 )
 
 #columns(2, [
@@ -153,13 +304,11 @@ be used on each item in the datastructure.
 #set text(size: 11pt)
 // images
 #align(
-  center,
-  [#image("../../Screenshots/2023_10_06_09_37_26.png", width: 80%)],
+  center, [#image("../../Screenshots/2023_10_06_09_37_26.png", width: 80%)],
 )
 
 #columns(
-  2,
-  [
+  2, [
     #text(green)[Benefits]
     - client is not responsible for loop
     - synchronization can be provided at the level of the whole traversal rather than
@@ -185,6 +334,5 @@ iterate on our local machine.
 #set text(size: 11pt)
 // images
 #align(
-  center,
-  [#image("../../Screenshots/2023_10_06_09_51_15.png", width: 50%)],
+  center, [#image("../../Screenshots/2023_10_06_09_51_15.png", width: 50%)],
 )

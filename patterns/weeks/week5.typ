@@ -21,7 +21,7 @@
 )
 
 #section("Values in Programming")
-How are values represented in progamming languages?
+How are values represented in programming languages?
 - types
   - int
   - double

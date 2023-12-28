@@ -1,195 +1,262 @@
 #import "../../utils.typ": *
 
-#section("Singleton (Boxing and Killing)")
+#subsubsection([Parameterize from Above])
 #set text(size: 14pt)
-Problem | Guarantee that a resource exists *exactly once* and can be globally
-accessed.\
-Context |
-- one instance
-- globally accessible
-- subclassing should be possible
-- extending must not break code
-- lazy or eager loading possible
+
+Problem | How can I provide individual services that need to run independently
+of each other with global data without using singletons?\
+Solution | Parameterize from above, aka first define global services and put
+them into the application, then register "horizontal" services one by one, see
+picture. Participants :
+-
 #set text(size: 11pt)
 // images
-//
-```java
-public class Singleton {
-  private static class InstanceHolder {
-    // Singleton will be instantiated as soon as the
-    // ClassLoader instantiates the overlying class.
-    private static final Singleton INSTANCE = new Singleton();
-  }
-  public static Singleton getInstance() {
-    return InstanceHolder.INSTANCE;
-  }
-  protected Singleton() { } // allow subclassing
-}
-```
-
-#columns(2, [
-  #text(green)[Benefits]
-  - controlled access to sole instance
-  - reduced name space
-  - premits variable number of instances
-    - -> can also be a dualton, tripleton, etc.
-  - more flexible than class operations -> static etc.
-  #colbreak()
-  #text(red)[Liabilities]
-  - introduces global state
-    - clients might be interfering
-  - no polymorphism
-  - hard to test
-    - requires mock implementations
-  - multithreading makes access harder
-    - use rust...
-])
-
-#subsection([Registry])
-#set text(size: 14pt)
-Problem | This solves the issue of testability with a singleton by providing a
-registry to allow different singletons to replace each other. E.g. poor mans
-polymorphism.\
-#set text(size: 11pt)
-// images
+The idea is that you have certain services, that need to run at each layer,
+while other services need to run on top of each other. This means you can't just
+inject the horizontally layered services into the application.
 #align(
-  center,
-  [#image("../../Screenshots/2023_12_08_04_57_16.png", width: 50%)],
+  center, [#image("../../Screenshots/2023_12_28_04_33_56.png", width: 100%)],
 )
 #align(
-  center,
-  [#image("../../Screenshots/2023_12_08_05_03_00.png", width: 100%)],
+  center, [#image("../../Screenshots/2023_12_28_04_27_41.png", width: 100%)],
 )
-
-#columns(2, [
-  #text(green)[Benefits]
-  - better testing via singleton plymorphism
-  #colbreak()
-  #text(red)[Liabilities]
-  - IPC style registering
-    - type leads to runtime error
-])
-
-#subsection([Monostate])
-#set text(size: 14pt)
-
-Problem | Multiple instances should have the same behavior -> behavior of
-singleton without the same name.\
-Behavior here does not mean the same result -> instead, same function signatures
--> must be capable of being placed everywhere where singleton is used.
-#set text(size: 11pt)
-// images
 ```java
-// Example 1:
-//  > Plain Monostate implementation
-public class Monostate {
-  private static int x;
-  private static int y;
-  public int getX() { return x; }
-  public int getY() { return y; }
-}
-// Example 2:
-//
-> Mitigate Singleton & introduce interface
-public interface Monostate {
-  int getX();
-  int getY();
-}
-public class MonostateImpl implements Monostate {
-  public int getX() {
-    return Singleton.getInstance().getX();
-  }
-  public int getY() {
-    return Singleton.getInstance().getY();
+public final class Bootstrapper {
+  public static void main(string[] args) { // PfA applied
+    // instantiate vertical layer contexts first
+    SecurityContext securityContext = new SecurityContextImpl();
+    ConfigurationSettings configuration = new ConfigurationSettingsImpl(args);
+    // encapsulate variables into an application context
+    var applicationContext = new ApplicationContextImpl(
+    securityContext,
+    configuration);
+    // instantiate horizontal layer contexts from bottom to top
+    DataContext dlContext = new DataContextImpl(applicationContext);
+    BusinessContext blContext = new BusinessContextImpl(applicationContext, dlContext);
+    UIContext uiContext = new UIContextImpl(applicationContext, blContext);
+    // show initial UI dialog
+    uiContext.show();
   }
 }
 ```
-
-#subsection([Killing])
-#set text(size: 14pt)
-
-Problem | A framework uses a singleton, we therefore need a way to circumvent
-the singleton in order to test the code.\
-#align(
-  center,
-  [#image("../../Screenshots/2023_12_08_05_05_17.png", width: 100%)],
-)
-
-#text(red)[Solution with monostate pattern combined!]
-
-#set text(size: 11pt)
-#align(
-  center,
-  [#image("../../Screenshots/2023_12_08_05_31_53.png", width: 100%)],
-)
 
 #columns(
-  2,
-  [
+  2, [
     #text(green)[Benefits]
-    - polymorphism for testing
-    - well defined creation and destruction
-    - transparency -> no need to know about monostate
+    - no global variables
+    - implementations of parametrized functionalities are exchangeable
+      - additional implementation possible -> testing etc.
+    - enforces separation of concerns at architecture level
+      - view, logic, data are separated
     #colbreak()
     #text(red)[Liabilities]
-    - breaks inheritance hierarchy -> a non monostate class can't be casted to a
-      monostate class
-      - reason: monostate only has global state, inheriting does hence not do anything!
-      - you also can't cast since the memory can't be replaced -> it's static memory,
-        this does not work!
-    - monostate is *always created*
-      - consumes memory needlessly
-      - new keyword is not correct -> memory is already allocated
-      - users might confuse this with the new() function for heap objects!
-    - sharing monostate objects accross tiers is not possible
-    - shared state of monostate may cause unexpected behavior
-      - static variables -> change on obj1 -> obj2 also changes
-      - *only use monostate when mitigating singletons!*
+    - complexity
+      - Object instances aren’t accessible from everywhere; access to application
+        context needed
+      - Programmers must understand and accept the concept
+    - contexts must be passed through the entire application stack
+    - fragile bootstrapper: application must be wired completely at startup
   ],
 )
 
-#subsection([Service Locator])
+#subsubsection([Dependency Injection])
 #set text(size: 14pt)
-#align(
-  center,
-  [#image("../../Screenshots/2023_12_08_05_38_11.png", width: 100%)],
-)
 
-Problem | Same as singleton. Global functionality.\
-Context | However, here we would like to *not use* singletons, instead we pick
-the functionality from the singleton and use this instead, hence *services*.\
-Participants:
-- Provider/ServiceLocator: Registry Singleton that provides all service finders
-- Finder: ServiceFinder that provides a service implementation
-- Service: Service that does something...
+Problem | The bootstrapper from the Parameterize from above pattern is not
+flexible enough, hence I want a solution with which I can override existing
+services.\
+Solution | Inject a framework container with dependencies, which can then be
+used, exchanged, etc with framework components. Participants |
+- central container, which acts as a service registry
+  - container searches for services via *interfaces* provided by user
+- code annotations: users apply these to components
+  - declare the interface implementations
+  - reference required interfaces
+  - clients do not reference container directly
 #set text(size: 11pt)
-- Implement the ServiceLocator as a Singleton «Registry»
-  - Holds the concrete finder implementations
-- ServiceLocator returns finder instances, which are used to locate the underlying
-  services
-  - Both, finder and service are exposed by interfaces only
-- Also known as dynamic ServiceLocator or *Provider*
 // images
 #align(
-  center,
-  [#image("../../Screenshots/2023_12_08_05_44_20.png", width: 100%)],
+  center, [#image("../../Screenshots/2023_12_28_04_41_52.png", width: 100%)],
 )
 #align(
-  center,
-  [#image("../../Screenshots/2023_12_08_05_44_31.png", width: 100%)],
+  center, [#image("../../Screenshots/2023_12_28_04_42_33.png", width: 100%)],
 )
 
 #columns(
-  2,
-  [
+  2, [
     #text(green)[Benefits]
-    - only a single singleton is used
-      - all others are polymorphic with interfaces
-      - services can be exchanged even at runtime
+    - reduces coupling between client and implementation
+      - no need to reference container
+    - The contracts between the classes are based on interfaces
+      - Classes relate to each other not directly, but mediated by their interfaces
+    - Supports the open/closed principle
+    - Allows flexible replacement of an implementation
+    - Implementations can be marked as “single” (only one in the system) or
+      “transient” (new instance per injection)
     #colbreak()
     #text(red)[Liabilities]
-    - clients still rely on a static reference to ServiceLocator (tight coupling)
-      - hence ServiceLocator can't be removed
-      - can be removed with dependency injection
+    - black magic -> how does this work?
+      - code annotations...
+    - debugging can be hard
+    - recursive dependencies are hard to find and may prevent the system from startup
+    - relies on reflection and can result in a performance hit
+  ],
+)
+
+#subsubsection([Flyweight])
+#set text(size: 14pt)
+
+Problem | Many objects use the same constant data, how can we avoid copying this
+data, with objects that might also have non-shared data?\
+Solution | Create global access to constant data for all objects, hence avoiding
+copying this data.\
+Participants :
+- extrinsic data: unshared data
+- intrinsic data: shared data
+  - *immutable!*
+#set text(size: 11pt)
+// images
+#align(
+  center, [#image("../../Screenshots/2023_12_28_04_52_21.png", width: 80%)],
+)
+#align(
+  center, [#image("../../Screenshots/2023_12_28_04_52_45.png", width: 100%)],
+)
+#align(
+  center, [#image("../../Screenshots/2023_12_28_04_52_56.png", width: 100%)],
+)
+#align(
+  center, [#image("../../Screenshots/2023_12_28_04_53_13.png", width: 100%)],
+)
+#text(
+  red,
+)[Note, the UnsharedConcreteFlyweight is essentially it's own object, aka it
+  doesn't get included anywhere.]
+```java
+// FlyweightFactory
+package ch.ost.pf.flyweight;
+
+import java.util.Hashtable;
+
+public class FlyweightFactory {
+  private final Hashtable<Character, FlyweightChar> chars = new Hashtable<>();
+
+  public FlyweightChar getFlyweight(char key) {
+    if (!chars.containsKey(key)) {
+      chars.put(key, createFlyweight(key));
+    }
+    return chars.get(key);
+  }
+
+  protected FlyweightChar createFlyweight(char key) {
+    return new ConcreteFlyweightChar(key);
+  }
+}
+
+// FlyweightChar
+package ch.ost.pf.flyweight;
+
+public interface FlyweightChar {
+    int getCharCode();
+}
+
+// ConcreteFlyweightChar
+package ch.ost.pf.flyweight;
+
+public class ConcreteFlyweightChar implements FlyweightChar {
+    private final char character;
+
+    public int getCharCode() {
+        return character;
+    }
+
+    ConcreteFlyweightChar(char character) {
+        this.character = character;
+    }
+}
+```
+
+#columns(
+  2, [
+    #text(green)[Benefits]
+    - Reduction of the total number of instances (space savings). Savings depend on
+      several factors:
+      - the reduction in the total number of instances comes from sharing
+      - the amount of intrinsic state per object
+      - whether extrinsic state is computed (=computation time) or stored (= space cost)
+      #colbreak()
+      #text(red)[Liabilities]
+    - Can’t rely on object identity; stored elements contain Value characteristics
+    - May introduce run-time costs associated finding Flyweights, and/or computing
+      extrinsic state
+  ],
+)
+
+Notes:\
+- often combined with composite
+  - Hierarchical structure as a graph with shared leaf nodes
+    - Leaf nodes cannot store a pointer to their parent
+    - Parent pointer is passed to the flyweight as part of its extrinsic state
+    - Impacts on how the objects in the hierarchy communicate with each other
+- handles with fine-grained elements, which contain immutable value
+  characteristics
+- fine-grained objects are stored globally, lazy initialized
+  - Behavior similar to a multi-Singleton; a single class stores multiple shared
+    instances
+- Objects are created in a Class Factory (Simple Factory / Static Factory
+  Method)-like manner
+- Flyweight contains a pool of shared objects
+  - Pooling pattern by POSA3
+- #text(
+    red,
+  )[Flyweight is categorized as a structural pattern, but it is kinda everything,
+    especially creational]
+#align(
+  center, [#image("../../Screenshots/2023_12_28_04_57_18.png", width: 100%)],
+)
+#align(
+  center, [#image("../../Screenshots/2023_12_28_05_06_16.png", width: 100%)],
+)
+
+#subsubsection([Pooling])
+#set text(size: 14pt)
+
+Problem | I require fast/efficient access to resources that need to be available
+to multiple objects.\
+Solution | Create a pool of resources which can be acquired or released by
+clients.\
+#set text(size: 11pt)
+// images
+#align(
+  center, [#image("../../Screenshots/2023_12_28_05_07_07.png", width: 100%)],
+)
+#align(
+  center, [#image("../../Screenshots/2023_12_28_05_07_22.png", width: 100%)],
+)
+
+Notes:\
+- Define the maximum number of resources that are maintained by the resource pool
+  - Typically set at initialization time of the pool
+- decide between lazy or eager acquisition of resources
+- Determine resource recycling/eviction semantics
+  - E.g. clean up stack after thread execution has completed
+  - Use appropriate allocation and destruction patterns
+- *Resources are not named -> unlike caching, acquire will get you a random resource!*
+
+#columns(
+  2, [
+    #text(green)[Benefits]
+    - Improves the performance of an application
+      - Helps reduce the time spent in costly release and re-acquisition
+    - Lookup and release of previously-acquired resources is predictable
+    - Simplified release and acquisition of resources
+    - New resources can be created dynamically if demand exceeds the available
+      resources
+    #colbreak()
+    #text(red)[Liabilities]
+    - The management of resources results in a certain overhead
+    - Depending on the environment and resource type, resources must be released back
+      to the pool
+    - Acquisition requests must be synchronized to avoid race conditions
   ],
 )

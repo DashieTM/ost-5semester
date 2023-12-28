@@ -2,12 +2,45 @@
 
 #subsection("Memento")
 #set text(size: 14pt)
-Problem | *History* -> Object should remember its own state
-Category | *Behavioral*
+Problem | *History* -> Object should remember its own state\
+Category | *Behavioral*\
 Participants | Originator -> Object in question, Memento -> History, e.g. stack,
-#align(center, [#image("../../Screenshots/2023_09_29_09_21_19.png", width: 80%)])
 Caretaker -> storage, e.g. database
 #set text(size: 11pt)
+#align(
+  center, [#image("../../Screenshots/2023_09_29_09_21_19.png", width: 80%)],
+)
+
+```java
+// Memento
+import org.jetbrains.annotations.Nullable;
+public class Memento {
+  private final String savedState;
+
+  @Nullable
+  String getState() {
+    return savedState;
+  }
+  Memento(@Nullable String state) {
+    savedState = state;
+  }
+}
+
+// Originator
+import org.jetbrains.annotations.NotNull;
+public class Originator {
+  private String internalData;
+
+  @NotNull
+  public Memento createMemento() {
+    return new Memento(internalData);
+  }
+
+  public void setMemento(@NotNull Memento memento) {
+    internalData = memento.getState();
+  }
+}
+```
 
 - similar:
   - Serialization
@@ -25,25 +58,27 @@ Caretaker -> storage, e.g. database
   - No direct access to saved state, it must be restored first
 ])
 
-#subsection("Singleton")
-Problem | *Static Instance* -> only 1 object of this type should exist 
+#subsection("Singleton (Base)")
+#text(red)[This is explained better later on] 
+Problem | *Static Instance* -> only 1 object of this type should exist\
 Category | *Creational*
-#columns(2, [
-  #text(green)[Benefits]
-  - clean solution to single object 
-  - solves dependencies including the singleton object
-  - solves argument spam in functions
-  #colbreak()
-  #text(red)[Liabilities]
-  - if built wrong can lead to needless mock implementations of a singleton -> mock singletons for tests 
-  - can lead to race conditions -> not in rust 
-  - might require getDB() calls
-])
+#columns(
+  2, [
+    #text(green)[Benefits]
+    - clean solution to single object
+    - solves dependencies including the singleton object
+    - solves argument spam in functions
+    #colbreak()
+    #text(red)[Liabilities]
+    - if built wrong can lead to needless mock implementations of a singleton -> mock
+      singletons for tests
+    - can lead to race conditions -> not in rust
+    - might require getDB() calls
+  ],
+)
 
 #subsection("Prototype")
-Problem | *Inheritance problem* -> too many inheritances 
-Category | *Creational*
+Problem | *Inheritance problem* -> too many inheritances\
+Category | *Creational*\
 Similar | *Trait / Interface*
-
-
 
