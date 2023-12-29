@@ -1,6 +1,6 @@
 #import "../template.typ": *
 
-#show: doc => conf(author: "Fabio Lenherr", "Patterns and frameworks", "summary", doc)
+#show: doc => conf(author: "Fabio Lenherr", "Patterns and Frameworks", "summary", doc)
 
 #include "weeks/week1.typ"
 #include "weeks/week2.typ"

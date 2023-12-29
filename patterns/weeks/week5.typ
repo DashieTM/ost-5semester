@@ -16,8 +16,7 @@
   - behavior
 
 #align(
-  center,
-  [#image("../../Screenshots/2023_10_20_07_40_21.png", width: 100%)],
+  center, [#image("../../Screenshots/2023_10_20_07_40_21.png", width: 100%)],
 )
 
 #section("Values in Programming")
@@ -38,8 +37,7 @@ How are values represented in programming languages?
   to check inside functions that use this value.
 
   #align(
-    center,
-    [#image("../../Screenshots/2023_10_20_07_54_38.png", width: 80%)],
+    center, [#image("../../Screenshots/2023_10_20_07_54_38.png", width: 80%)],
   )
 
   #subsubsection("Issues with objects")
@@ -204,7 +202,7 @@ Participants :
   #subsection([Copied Value and Cloning])
   #set text(size: 14pt)
 
-  Problem | Essentially call by value on value objects -> .clone()
+  Problem | Essentially call by value on value objects -> .clone()\
   Context | Can be used for memory safety
   #set text(size: 11pt)
   #align(center, [#image("../../Screenshots/2023_10_20_08_23_01.png", width: 70%)])
