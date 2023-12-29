@@ -31,6 +31,45 @@ statements(aka not yandere dev)\
       for this object) and the clockstate],
 )
 
+```rs
+// self is necessary to ensure object safety
+trait State {
+    fn operation(&self) {
+        println!("not implemented");
+    }
+}
+
+struct Context {
+    pub state: Box<dyn State>,
+}
+
+struct StateStart {}
+impl State for StateStart {
+    fn operation(&self) {
+        println!("Game started");
+    }
+}
+
+struct StateEnd {}
+impl State for StateEnd {
+    fn operation(&self) {
+        println!("Game ended");
+    }
+}
+
+fn main() {
+    let mut grengeng = Context {
+        // traits sizes are not known at compile time
+        // create a pointer to interface with V-table
+        state: Box::new(StateStart {}),
+    };
+    grengeng.state.operation();
+    grengeng.state = Box::new(StateEnd {});
+    grengeng.state.operation();
+}
+```
+
+
 #columns(2, [
   #text(green)[Benefits]
   - abstracts functionality away
@@ -84,7 +123,7 @@ instead.\
   ],
 )
 
-#subsection([Sate Pattern (Collection For States)])
+#subsection([State Pattern (Collection For States)])
 #set text(size: 14pt)
 
 Problem | In order to solve the problem of both too many objects, but also too

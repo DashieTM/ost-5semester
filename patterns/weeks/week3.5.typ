@@ -635,9 +635,12 @@ Variations:\
 ])
 
 #subsection([Bridge])
-*Problem* |\
-*Solution* |\
-*Example* |\
+*Problem* | How can I make interfaces for objects interchangeable?\
+*Solution* | Create an interface for the object and another for the behavior.
+Then the object will hold a reference to the implementation, which can be
+exchanged at will.\
+*Example* | interface animal has a behavior. Monkey -> Monkeybehavior, Peng ->
+pengereng\
 #align(center, [#image("../uml/bridge.jpg", width: 100%)])
 ```cs
 // Helps in providing truly decoupled architecture
@@ -700,19 +703,28 @@ public class AbstractBridge : IAbstractBridge
 }
 ```
 
-#columns(2, [
-  #text(green)[Benefits]
-  -
-  #colbreak()
-  #text(red)[Liabilities]
-  -
-])
+#columns(
+  2, [
+    #text(green)[Benefits]
+    - flexibility -> objects can exchange interfaces at will
+      - similar to pointer to implementation -> can also be exchanged
+    - Reduces the amount of objects necessary to implement all combinations
+      - each animal to each behavior, etc.
+    #colbreak()
+    #text(red)[Liabilities]
+    - indirection
+    - unclear what the behavior will do exactly
+      - you would need to know the exact implementation
+  ],
+)
 
 #subsection([Composite])
-*Problem* |\
-*Solution* |\
-*Example* |\
+*Problem* | How can I model the existance of subnodes within classes?\
+*Solution* | One interface, 2 implementations, one is the leaf, the other is the
+node(composite).\
+*Example* | Representation of tree structures\
 #align(center, [#image("../uml/composite.jpg", width: 100%)])
+#align(center, [#image("../uml/composite2.jpg", width: 100%)])
 ```cpp
 #include <iostream>
 #include <string>
@@ -819,18 +831,23 @@ int main() {
 }
 ```
 
+Note:\
+#text(
+  orange,
+)[A composite is essentially just a class with one or more of the same class
+  within it. -> aka composition]
+
 #columns(2, [
   #text(green)[Benefits]
-  -
+  - nodes and leafs can be interchanged
   #colbreak()
   #text(red)[Liabilities]
-  -
 ])
 
 #subsection([Template Method])
-*Problem* |\
-*Solution* |\
-*Example* |\
+*Problem* | How can I create a template for a class so that users can easily
+implement what is needed?\
+*Solution* | Create an interface......\
 #align(center, [#image("../uml/template.jpg", width: 100%)])
 ```cpp
 #include <iostream>
@@ -865,18 +882,26 @@ class MyView : public View { // ConcreteClass
 };
 
 int main() {
-  // The smart pointers prevent memory leaks
   std::unique_ptr<View> myview = std::make_unique<MyView>();
   myview->display();
 }
 ```
 
+Note:\
+#text(
+  orange,
+)[Note, this can also be done with traits in rust, or interfaces for languages
+  that allow default implementations. For something like jafuck, this is not
+  applicable as it doesn't allow default implementations. Hence, for java you
+  *need* to use subclassing to achieve template method pattern.]
+
 #columns(2, [
   #text(green)[Benefits]
-  -
+  - templated classes
+  - users know what needs to be implemented
   #colbreak()
   #text(red)[Liabilities]
-  -
+  - template has required functions
 ])
 
 #subsection([Builder])
@@ -974,9 +999,10 @@ public class Client
 ])
 
 #subsection([Prototype])
-*Problem* |\
-*Solution* |\
-*Example* |\
+*Problem* | How can I have rust functionality without using rust? (clone
+function)\
+*Solution* | Implement a "prototype" interface with the clone method in it. Then
+implement the clone method for all classes that should be cloneable.\
 #align(center, [#image("../uml/prototype.jpg", width: 100%)])
 ```cpp
 #include <iostream>
@@ -1011,6 +1037,7 @@ public:
   Wall() {}
   virtual void enter() {}
   virtual Wall* clone() const {
+    // copy constructor on clone
     return new Wall(*this);
   }
 };
@@ -1126,28 +1153,15 @@ int main() {
   game.createMaze(simpleMazeFactory);
 }
 ```
+Note: \
+  #text(orange)[cloning can lead to performance hits, so use it only when needed.] 
 
 #columns(2, [
   #text(green)[Benefits]
-  -
+  - both shallow and deep copy possible
+  - can be implemented for every class
   #colbreak()
-  #text(red)[Liabilities]
-  -
+  #text(red)[Liabilities] 
+  - needs an implementation for something simple
+    - rust doesn't, hehe, derive kekw
 ])
-
-#subsection([State])
-*Problem* |\
-*Solution* |\
-*Example* |\
-#align(center, [#image("../uml/state.jpg", width: 100%)])
-```lang
-```
-
-#columns(2, [
-  #text(green)[Benefits]
-  -
-  #colbreak()
-  #text(red)[Liabilities]
-  -
-])
-

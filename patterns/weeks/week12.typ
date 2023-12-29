@@ -73,7 +73,6 @@ polymorphism.\
 #subsubsection([Monostate(Killing)])
 *Problem* | Given code that uses a singleton, you need to remove the singleton for your tests...\
 *Solution* | Wrap the singleton access into monostate, which can either return the singleton, or a stub.\
-#set text(size: 5pt)
 ```lang
 // this is a regular monostate
 public class Monostate {
@@ -106,7 +105,6 @@ public class MonostateMockImpl implements Monostate {
 }
 // both can now be used
 ```
-#set text(size: 8pt)
 
 compared to regular singleton
 #columns(2, [
