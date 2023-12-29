@@ -1,4 +1,5 @@
 #import "../template.typ": *
+#import "../utils.typ": *
 
 #show: doc => conf(author: "Fabio Lenherr", "Patterns and Frameworks", "summary", doc)
 
@@ -14,3 +15,7 @@
 #include "weeks/week7.typ"
 #include "weeks/week8.typ"
 #include "weeks/week14.typ"
+#section("MAP/GAME Patterns")
+#include "weeks/MAP.typ"
+#section("POSA Patterns")
+#include "weeks/POSA.typ"
