@@ -77,8 +77,4 @@ Category | *Creational*
   ],
 )
 
-#subsection("Prototype")
-Problem | *Inheritance problem* -> too many inheritances\
-Category | *Creational*\
-Similar | *Trait / Interface*
 
