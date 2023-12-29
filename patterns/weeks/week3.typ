@@ -4,13 +4,13 @@
 #set text(size: 14pt)
 
 Problem | decouple the execution itself from when to execute.\
-#set text(size: 11pt)
 Context | How can *commands be encapsulated*, so that they can be
 *parameterized, schedules, logged and/or undone*? Can also be seen as mapping a
 function to something like a button on a controller -> SpiritOfMars!
 #align(
   center, [#image("../../Screenshots/2023_10_06_08_45_09.png", width: 80%)],
 )
+#set text(size: 11pt)
 
 #columns(
   2, [
@@ -437,10 +437,11 @@ class Main
 #set text(size: 14pt)
 
 Problem | Don't rely on external iterator which might introduce too much
-coupling. Context | You would like to have a print functinality for your
-datastructure, hence you create an enumeration function. This will then be used
-in a "executeOn" function which takes a function as a parameter, which will then
-be used on each item in the datastructure.
+coupling.\
+Context | You would like to have a print functinality for your datastructure,
+hence you create an enumeration function. This will then be used in a "executeOn"
+function which takes a function as a parameter, which will then be used on each
+item in the datastructure.
 -
 #set text(size: 11pt)
 // images
@@ -468,9 +469,10 @@ be used on each item in the datastructure.
 #set text(size: 14pt)
 
 Problem | Collection is on client -> iterator would not be efficient over
-network. Context | We would like to access a datastructure on a remote pc, how
-do we do this? -> *Batch request*\ We simply get all data, then proceed to
-iterate on our local machine.
+network.\
+Context | We would like to access a datastructure on a remote pc, how do we do
+this? -> *Batch request*\ We simply get all data, then proceed to iterate on our
+local machine.
 -
 #set text(size: 11pt)
 // images

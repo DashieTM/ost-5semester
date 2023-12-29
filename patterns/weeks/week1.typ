@@ -20,8 +20,8 @@ Note:
 
 #subsection("Mediator")
 #set text(size: 14pt)
-Problem | *Coupling* -> too many objects interact with each other Category |
-*Behavioral*
+Problem | *Coupling* -> too many objects interact with each other\
+Category | *Behavioral*
 #align(
   center, [#image("../../Screenshots/2023_09_29_09_12_31.png", width: 80%)],
 )

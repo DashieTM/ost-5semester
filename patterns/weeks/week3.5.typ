@@ -905,9 +905,13 @@ Note:\
 ])
 
 #subsection([Builder])
-*Problem* |\
-*Solution* |\
-*Example* |\
+*Problem* | How can a class (the same construction process) create different
+representations of a complex object?\
+*Solution* | Encapsulate creating and assembling the parts of a complex object
+in a separate Builder object.\
+*Intent* |The intent of the Builder design pattern is to separate the
+construction of a complex object from its representation. By doing so, the same
+construction process can create different representations.\
 #align(center, [#image("../uml/builder.jpg", width: 100%)])
 ```cs
 /// <summary>
@@ -992,10 +996,14 @@ public class Client
 
 #columns(2, [
   #text(green)[Benefits]
-  -
+  - Allows you to vary a product's internal representation.
+  - Encapsulates code for construction and representation.
+  - Provides control over the steps of the construction process.
   #colbreak()
   #text(red)[Liabilities]
-  -
+  - A distinct ConcreteBuilder must be created for each type of product.
+  - Builder classes must be mutable.
+  - May hamper/complicate dependency injection.
 ])
 
 #subsection([Prototype])
@@ -1153,15 +1161,17 @@ int main() {
   game.createMaze(simpleMazeFactory);
 }
 ```
-Note: \
-  #text(orange)[cloning can lead to performance hits, so use it only when needed.] 
+Note:\
+#text(
+  orange,
+)[cloning can lead to performance hits, so use it only when needed.]
 
 #columns(2, [
   #text(green)[Benefits]
   - both shallow and deep copy possible
   - can be implemented for every class
   #colbreak()
-  #text(red)[Liabilities] 
+  #text(red)[Liabilities]
   - needs an implementation for something simple
     - rust doesn't, hehe, derive kekw
 ])
