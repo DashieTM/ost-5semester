@@ -195,25 +195,25 @@ Liabilities:
   single response? \[Yes\]
 
   #figure(
-    [#image("../presentations/uploads/094f3812bc6fd3c1f68add604a9145c5/list.png")], caption: [
+    [#image(width: 50%,"../presentations/uploads/094f3812bc6fd3c1f68add604a9145c5/list.png")], caption: [
       list.png
     ],
   )
 
   #figure(
-    [#image("../presentations/uploads/b276b829704c67a42ee691be7a31d65a/tree.png")], caption: [
+    [#image(width: 50%,"../presentations/uploads/b276b829704c67a42ee691be7a31d65a/tree.png")], caption: [
       tree.png
     ],
   )
 
   #figure(
-    [#image("../presentations/uploads/22d866a2ed3c51d25127f3d812c80249/forest.png")], caption: [
+    [#image(width: 50%,"../presentations/uploads/22d866a2ed3c51d25127f3d812c80249/forest.png")], caption: [
       forest.png
     ],
   )
 
   #figure(
-    [#image(
+    [#image(width: 50%,
         "../presentations/uploads/7a8ca424c530b3fd309a7168fa1660f8/pagination.png",
       )], caption: [
       pagination.png
@@ -235,19 +235,19 @@ Solution: Introduce an explicit version number into the exchanged messages to
 indicate the API version.
 
 Examples: Version of representation format
-#image(
+#image(width: 50%,
   "../presentations/uploads/f55758d145d702374870c5721495a8be/represenation.png",
 )
 
 Specific operation
-#image(
+#image(width: 50%,
   "../presentations/uploads/2e2d3801a405b2dff4b85c5c7b8792b1/operation.png",
 )
 
-Whole Api #image("../presentations/uploads/2735a3a0967525f807ea094e138e4de0/api.png")
+Whole Api #image(width: 50%,"../presentations/uploads/2735a3a0967525f807ea094e138e4de0/api.png")
 
 JSON payload
-#image(
+#image(width: 50%,
   "../presentations/uploads/742cae61ab201413c72205d3940e654e/payload.png",
 )
 
@@ -267,7 +267,7 @@ api versions - Clarity of change impact
 Solution: Introduce a hierarchical three-number versioning (e.g 1.1.1)
 
 Example:
-#image(
+#image(width: 50%,
   "../presentations/uploads/c834347ce17c41236f0b9aac97d2a026/versioning.png",
 )
 
@@ -291,7 +291,7 @@ fashion
 Benefits: - Clients have time to implement new API - Reduces likelihood of
 undetected changes further
 
-Example: #image(
+Example: #image(width: 50%,
   "../presentations/uploads/91b75328686095c4f5878b8cb567b2ee/rollout.png",
 )
 
@@ -337,10 +337,10 @@ while(true) {
 }
 ```
 
-#image(
+#image(width: 50%,
   "../presentations/uploads/241c3957b083c9533158d990bd8084f2/bevy-function.png",
 )
-#image("../presentations/uploads/3d2ff886e4051235f3d8b38b9eb3aac3/bevy.png")
+#image(width: 50%,"../presentations/uploads/3d2ff886e4051235f3d8b38b9eb3aac3/bevy.png")
 === Fixed Time Step with No Synchronization:
 <fixed-time-step-with-no-synchronization>
 Run the game loop as fast as possible without synchronization. This was mostly
@@ -356,7 +356,7 @@ directly affected by hardware and complexity. - Gameplay is faster on a fast
 machine
 
 #figure(
-  [#image(
+  [#image(width: 50%,
       "../presentations/uploads/afaf7dc8d9b2d75757b16d28ef170411/fixedTime.png",
     )], caption: [
     fixedTime
@@ -377,7 +377,7 @@ Liabilities: - Game can still play too slowly if updates take too long - CPU
 thread scheduling is not guaranteed - bad when forced -\> NFS Rivals
 
 #figure(
-  [#image(
+  [#image(width: 50%,
       "../presentations/uploads/383d7a7d5ad1a12eed9eb24ec1073422/fixedTimeS.png",
     )], caption: [
     fixedTimeS
@@ -397,7 +397,7 @@ calls than the second. This will create a floating point error delta between the
 two PCs.
 
 #figure(
-  [#image(
+  [#image(width: 50%,
       "../presentations/uploads/776785bef3ce0cdd37b042783e57d2d0/varTime.png",
     )], caption: [
     varTime
@@ -423,10 +423,10 @@ Benefits:
 Liabilities: - More complex implementation, requiring tuning of the update time
 step for different hardware.
 
-#image(
+#image(width: 50%,
   "../presentations/uploads/a4ae4893cf9406606b680fb9148f1cc1/physicswait.png",
 )
-#image(
+#image(width: 50%,
   "../presentations/uploads/4754664079677c4012e41022735b6da7/fixTimeVar.png",
 )
 
@@ -442,7 +442,7 @@ render(lag / MS_PER_UPDATE);
   gamers.\[no\]
 
 #figure(
-  [#image(
+  [#image(width: 50%,
       "../presentations/uploads/73ef97c1ed6b2d8a9322d3c1328ce56f/monobehaviour_flowchart.svg",
     )], caption: [
     monobehaviour\_flowchart.svg
@@ -461,13 +461,13 @@ responsibilities is hard to change - A game character class that handles
 input, sound, physics and the rendering. This becomes a large file very
 quickly.
 
-#figure([#image("../presentations/uploads/e1b615ffcf3fb7ee180e78a4926db098/player.png")],
+#figure([#image(width: 50%,"../presentations/uploads/e1b615ffcf3fb7ee180e78a4926db098/player.png")],
   caption: [
     player
   ]
 )
 
-#figure([#image("../presentations/uploads/662bfa86dafc4fd021b6e198a6fe43f3/bad-bjorn.png")],
+#figure([#image(width: 50%,"../presentations/uploads/662bfa86dafc4fd021b6e198a6fe43f3/bad-bjorn.png")],
   caption: [
     bad-bjorn
   ]
@@ -477,8 +477,8 @@ Solution: - Place the different components into different classes. Input
 into InputComponent and the game character has an instance of it. Entity
 is reduced to a container of components
 
-#image("../presentations/uploads/c5c8ffa55e7f77517cb0dd1a99ddc4c8/component-bevy.png")
-#image("../presentations/uploads/0cf700577d0d4b29c1b7423b18fe09ee/good-bjorn.png")
+#image(width: 50%,"../presentations/uploads/c5c8ffa55e7f77517cb0dd1a99ddc4c8/component-bevy.png")
+#image(width: 50%,"../presentations/uploads/0cf700577d0d4b29c1b7423b18fe09ee/good-bjorn.png")
 
 Benefits: - Components become reuseable packages - Developers can work
 on a component without needing knowledge on how other components work
@@ -493,7 +493,7 @@ This refers to a class inheriting from 2 classes which in return will
 inherit the same class. This leads to undefined behavior as the system
 can’t determine which function to use.
 
-#figure([#image("../presentations/uploads/8986ed9ce8851a72672148ca59709beb/diamond.png")],
+#figure([#image(width: 50%,"../presentations/uploads/8986ed9ce8851a72672148ca59709beb/diamond.png")],
   caption: [
     diamond
   ]
@@ -501,12 +501,12 @@ can’t determine which function to use.
 
 ===== ECS (Entities Components Systems)
 <ecs-entities-components-systems>
-#image("../presentations/uploads/cb2d4ada762601c9a55c91d1d4bee1b6/ecs.png") This takes
+#image(width: 50%,"../presentations/uploads/cb2d4ada762601c9a55c91d1d4bee1b6/ecs.png") This takes
 the component pattern to the extreme by only storing ids of components.
 This allows for fast queries of components, which in return solves the
 complexity of component interaction:
 
-#figure([#image("../presentations/uploads/065052c0427ee26879e7be948c3e4da6/reset-powerup.png")],
+#figure([#image(width: 50%,"../presentations/uploads/065052c0427ee26879e7be948c3e4da6/reset-powerup.png")],
   caption: [
     reset-powerup
   ]
@@ -622,23 +622,23 @@ behavior.
 - Events can get lost if not handled.
 - Memory usage
 
-#image("../presentations/uploads/bf150d1caed0d14d720304a21b3bd15c/bevy1.png")
-#image("../presentations/uploads/f2fb1b520a084f9298850c958230ea94/bevy2.png")
-#image("../presentations/uploads/9160090cd611dca6e7c3ec3b787d6b2c/illustration.png")
+#image(width: 50%,"../presentations/uploads/bf150d1caed0d14d720304a21b3bd15c/bevy1.png")
+#image(width: 50%,"../presentations/uploads/f2fb1b520a084f9298850c958230ea94/bevy2.png")
+#image(width: 50%,"../presentations/uploads/9160090cd611dca6e7c3ec3b787d6b2c/illustration.png")
 
-#image("../presentations/uploads/38fce3977f9ee309d85a164928fca742/events5.png")
-#image("../presentations/uploads/92cdb2c30b411b9751bf5662602cfca0/events6.png")
-#image("../presentations/uploads/e97e0987c1dac015e4212b9ccd6bff97/events7.png")
+#image(width: 50%,"../presentations/uploads/38fce3977f9ee309d85a164928fca742/events5.png")
+#image(width: 50%,"../presentations/uploads/92cdb2c30b411b9751bf5662602cfca0/events6.png")
+#image(width: 50%,"../presentations/uploads/e97e0987c1dac015e4212b9ccd6bff97/events7.png")
 === Ring Buffers
 <ring-buffers>
 Ring buffers allow continuous adding and deleting of events without
 shifting elements.
 
-#image("../presentations/uploads/49a113dc502555456caa7fd38f53f5c0/illustration2.png")
-#image("../presentations/uploads/07e723f6971077fd03367d9d6de572f8/events8.png")
-#image("../presentations/uploads/2eed469bf706a7df98890755d2eaee41/events9.png")
-#image("../presentations/uploads/0987835aa6959a15cd9d4af8ad58b66b/events10.png")
-#image("../presentations/uploads/350635c551de62764fd680447312ae14/events11.png")
+#image(width: 50%,"../presentations/uploads/49a113dc502555456caa7fd38f53f5c0/illustration2.png")
+#image(width: 50%,"../presentations/uploads/07e723f6971077fd03367d9d6de572f8/events8.png")
+#image(width: 50%,"../presentations/uploads/2eed469bf706a7df98890755d2eaee41/events9.png")
+#image(width: 50%,"../presentations/uploads/0987835aa6959a15cd9d4af8ad58b66b/events10.png")
+#image(width: 50%,"../presentations/uploads/350635c551de62764fd680447312ae14/events11.png")
 === Aggregating Events
 <aggregating-events>
 Duplicate entries can be aggregated within the queue -\> for example,
@@ -669,7 +669,7 @@ use the same thread there.
     worker queue
 === Memory
 <memory>
-#figure([#image("../presentations/uploads/2cdb16626f7c696d9c57806d8c42107e/image.png")],
+#figure([#image(width: 50%,"../presentations/uploads/2cdb16626f7c696d9c57806d8c42107e/image.png")],
   caption: [
     image
   ]

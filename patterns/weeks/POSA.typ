@@ -134,7 +134,7 @@ Daten unterstützt werden. Dies liefert eine gewisse Toleranz gegenüber
 Noisy Data und unsicheren Schlussfolgerungen
 === Solution
 <solution>
-#figure([#image("../presentations/uploads/65683560cc733705bb3a21e0e5d8759a/image.png")],
+#figure([#image(width: 50%,"../presentations/uploads/65683560cc733705bb3a21e0e5d8759a/image.png")],
   caption: [
     image
   ]
@@ -298,7 +298,7 @@ abort ausgelöst durch den coordinator.
 
 In der commit phase wird effektiv die arbeit verrichtet.
 
-#figure([#image("../presentations/uploads/62b311900aa6e59c08e89d932d0c3966/Screenshot_2023-12-01_at_11.44.32.png")],
+#figure([#image(width: 50%,"../presentations/uploads/62b311900aa6e59c08e89d932d0c3966/Screenshot_2023-12-01_at_11.44.32.png")],
   caption: [
     Screenshot 2023-12-01 at 11.44.32.png
   ]
@@ -364,7 +364,7 @@ Ressourcen, einschließlich Erstellung, Zuweisung, Nutzung und Freigabe.
 Automatisierungswerkzeuge und -Strategien werden implementiert, um den
 Lebenszyklus von Ressourcen zu verwalten.
 
-#figure([#image("../presentations/uploads/789b9dc78de8558c6553081c63611f42/RLMdynamics.PNG")],
+#figure([#image(width: 50%,"../presentations/uploads/789b9dc78de8558c6553081c63611f42/RLMdynamics.PNG")],
   caption: [
     RLMdynamics
   ]
