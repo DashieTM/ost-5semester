@@ -12,18 +12,15 @@ statements(aka not yandere dev)\
 #set text(size: 11pt)
 // images
 #align(
-  center,
-  [#image("../../Screenshots/2023_10_06_09_57_36.png", width: 80%)],
+  center, [#image("../../Screenshots/2023_10_06_09_57_36.png", width: 80%)],
 )
 #align(
-  center,
-  [Simple clock, 3 modes -> display time, change hours, and change minutes.\
+  center, [Simple clock, 3 modes -> display time, change hours, and change minutes.\
     On mode change you get to a different state.
     #image("../../Screenshots/2023_10_13_10_23_32.png", width: 70%)],
 )
 #align(
-  center,
-  [#image("../../Screenshots/2023_10_13_10_24_49.png", width: 90%)
+  center, [#image("../../Screenshots/2023_10_13_10_24_49.png", width: 90%)
     - ClockDataContext: Handles data for the pattern -> all states need to access this
     - ClockState: Parentobject that will redirect calls to each state
     - concrete states: handle calls that will be used
@@ -69,7 +66,6 @@ fn main() {
 }
 ```
 
-
 #columns(2, [
   #text(green)[Benefits]
   - abstracts functionality away
@@ -92,24 +88,141 @@ instead.\
 #set text(size: 11pt)
 // images
 #align(
-  center,
-  [#image("../../Screenshots/2023_10_13_10_24_49.png", width: 90%)
-    - all methods are created within the MethodsClockStateMachine
-      - tick is always the same
-      - increment, nextHour, nextMinute
-        - 3 different functions for 3 different modes
-      - nextModeDisplayingTime, nextModeSettingHours,NextModeSettingMinutes
-        - 3 different functions for 3 different modes
-    - The Mode object has 3 lambdas which will be created with the respective
-      functions for each mode to represent
-      - note that the functions inside Mode need to fit -> java -> runnable, rust ->
-        fn(i32) -> i32
+  center, [#image("../../Screenshots/2024_01_02_02_54_35.png", width: 90%)
   ],
 )
+- all methods are created within the MethodsClockStateMachine
+  - tick is always the same
+  - increment, nextHour, nextMinute
+    - 3 different functions for 3 different modes
+  - nextModeDisplayingTime, nextModeSettingHours,NextModeSettingMinutes
+    - 3 different functions for 3 different modes
+- The Mode object has 3 lambdas which will be created with the respective
+  functions for each mode to represent
+  - note that the functions inside Mode need to fit -> java -> runnable, rust ->
+    fn(i32) -> i32
+
+```java
+public class MethodsClockStateMachine implements ClockStateMachine {
+  // STATE DEFINITIONS (with transition to other states)
+  private final Mode displayingTime = new Mode( // increment, tick, changeMode
+      this::doNothing,
+      this::updateTime,
+      this::nextModeSettingHours);
+  private final Mode settingHours = new Mode(
+      this::nextHour,
+      this::doNothing,
+      this::nextModeSettingMinutes);
+  private final Mode settingMinutes = new Mode(
+      this::nextMinute,
+      this::doNothing,
+      this::nextModeDisplayingTime);
+
+  // initial state
+  private Mode behaviour = displayingTime;
+
+  // data for state management implementation
+  private int hour;
+  private int minute;
+  private int second;
+
+  @Override
+  public int getHour() { return hour; }
+  @Override
+  public int getMinute() { return minute; }
+  @Override
+  public int getSecond() { return second; }
+
+  /**
+   * State machine construction logic goes here...
+   */
+  public MethodsClockStateMachine(int hour, int minute, int second) {
+    this.hour = hour;
+    this.minute = minute;
+    this.second = second;
+  }
+
+
+  /**
+   * Forward 'change mode' event to current state.
+   */
+  @Override
+  public void changeMode() {
+    behaviour.getChangeMode().run();
+  }
+
+  /**
+   * Forward 'increment' event to current state.
+   */
+  @Override
+  public void increment() {
+    behaviour.getIncrement().run();
+  }
+
+  /**
+   * Forward 'tick' event to current state.
+   */
+  @Override
+  public void tick() {
+    behaviour.getTick().run();
+  }
+
+
+  // state management implementation
+  private void nextMode(Mode nextBehaviour) {
+    behaviour = nextBehaviour;
+  }
+
+  private void doNothing() { }
+
+  private void updateTime() {
+    if (++second == 60) {
+      second = 0;
+      if (++minute == 60) {
+        minute = 0;
+        hour = (hour + 1) % 24;
+      }
+    }
+  }
+
+  private void nextHour() { hour = (hour + 1) % 24; }
+  private void nextMinute() { minute = (minute + 1) % 60; }
+
+  private void nextModeDisplayingTime() { nextMode(displayingTime); }
+  private void nextModeSettingHours() { nextMode(settingHours); }
+  private void nextModeSettingMinutes() { nextMode(settingMinutes); }
+}
+
+public class Mode {
+  private final Runnable increment;
+  private final Runnable tick;
+  private final Runnable changeMode;
+
+  public Mode(@NotNull Runnable increment, @NotNull Runnable tick, @NotNull Runnable changeMode) {
+    this.increment = increment;
+    this.tick = tick;
+    this.changeMode = changeMode;
+  }
+
+  @NotNull
+  public Runnable getIncrement() {
+    return increment;
+  }
+
+  @NotNull
+  public Runnable getTick() {
+    return tick;
+  }
+
+  @NotNull
+  public Runnable getChangeMode() {
+    return changeMode;
+  }
+}
+```
 
 #columns(
-  2,
-  [
+  2, [
     #text(green)[Benefits]
     - slightly better performance due to removed typecasting -> virtual objects
     - behavior is coupled to state machine and not into thousands of classes
@@ -138,17 +251,116 @@ Participants :
 #set text(size: 11pt)
 // images
 #align(
-  center,
-  [#image("../../Screenshots/2023_10_13_10_52_36.png", width: 90%)],
+  center, [#image("../../Screenshots/2023_10_13_10_52_36.png", width: 90%)],
 )
 #align(
-  center,
-  [#image("../../Screenshots/2023_10_13_10_53_07.png", width: 90%)],
+  center, [#image("../../Screenshots/2023_10_13_10_53_07.png", width: 90%)],
 )
 
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class CollectionClockStateMachine implements ClockStateMachine {
+
+  // contains all states
+  private final List<Workpiece> workpieces = new ArrayList<>();
+
+  private final List<Workpiece> displayingTime = new ArrayList<>();
+  private final List<Workpiece> settingHours = new ArrayList<>();
+  private final List<Workpiece> settingMinutes = new ArrayList<>();
+
+  // the following fields/properties are only for demonstration purposes; not part of the pattern
+  private final Workpiece defaultPiece;
+
+  @Override
+  public int getHour() { return defaultPiece.getHour(); }
+  @Override
+  public int getMinute() { return defaultPiece.getMinute(); }
+  @Override
+  public int getSecond() { return defaultPiece.getSecond(); }
+
+  /**
+   * State machine construction logic goes here...
+   */
+  public CollectionClockStateMachine(int hour, int minute, int second) {
+    // #defaultPiece isn't part of the pattern
+    defaultPiece = new Workpiece(hour, minute, second);
+
+    workpieces.add(defaultPiece); // in real world, there are *many* such objects with a state
+    displayingTime.addAll(workpieces);
+  }
+
+  @Override
+  public void tick() {
+    displayingTime.forEach(Workpiece::tick);
+  }
+
+  @Override
+  public void increment() {
+    settingHours.forEach(Workpiece::incrementHour);
+    settingMinutes.forEach(Workpiece::incrementMinute);
+  }
+
+  @Override
+  public void changeMode() {
+    // simply rotate the objects within the collections
+    ArrayList<Workpiece> displayingTimePieces = new ArrayList<>(displayingTime);
+    displayingTime.clear();
+
+    displayingTime.addAll(settingMinutes);
+    settingMinutes.clear();
+
+    settingMinutes.addAll(settingHours);
+    settingHours.clear();
+
+    settingHours.addAll(displayingTimePieces);
+  }
+}
+
+// workpiece
+public class Workpiece {
+  private int hour;
+  private int minute;
+  private int second;
+
+  public int getHour() { return hour; }
+  public void setHour(int hour) { this.hour= hour; }
+
+  public int getMinute() { return minute; }
+  public void setMinute(int minute) { this.minute = minute; }
+
+  public int getSecond() { return second; }
+  public void setSecond(int second) { this.second = second; }
+
+  public Workpiece(int hour, int minute, int second) {
+    this.hour = hour;
+    this.minute = minute;
+    this.second = second;
+  }
+
+  public void incrementMinute() {
+    minute = (minute + 1) % 24;
+  }
+
+  public void incrementHour() {
+    hour = (hour + 1) % 24;
+  }
+
+  public void tick() {
+    if (++second == 60) {
+      second = 0;
+      if (++minute == 60) {
+        minute = 0;
+        hour = (hour + 1) % 24;
+      }
+    }
+  }
+}
+```
+
 #columns(
-  2,
-  [
+  2, [
     #text(green)[Benefits]
     - No need to create a class per state
     - Optimized for multiple objects (state machines) in a particular state
@@ -182,8 +394,7 @@ There are 3 kinds of individuals:
   - it is part of an entity
   - example: weight
 #align(
-  center,
-  [#image("../../Screenshots/2023_10_13_11_11_10.png", width: 70%)],
+  center, [#image("../../Screenshots/2023_10_13_11_11_10.png", width: 70%)],
 )
 
 #subsection("Software Design (OOD)")
@@ -195,7 +406,7 @@ There are 3 kinds of individuals:
   - represent *system activities*
   - Services are *distinguished by their behavior* rather than their state or
     content
-  - example: 
+  - example:
 - values
   - *the content is the dominant behavior* -> value is more important than the rest
     -> weight -> kg is just something to make it easier for us to interpret
