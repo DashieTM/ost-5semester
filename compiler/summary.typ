@@ -2,15 +2,15 @@
   "a4", columns: 4, flipped: true, foreground: [
     #columns(4, [#line(stroke: .5pt + black, start: (105%, 2%), end: (105%, 98%)),
       #colbreak()
-      #line(stroke: .5pt + black, start: (-50%, 2%), end: (-50%, 98%))
+      #line(stroke: .5pt + black, start: (-51%, 2%), end: (-51%, 98%))
       #colbreak()
-      #line(stroke: .5pt + black, start: (-53%, 2%), end: (-53%, 98%))
+      #line(stroke: .5pt + black, start: (-54%, 2%), end: (-54%, 98%))
     ])
 
-  ], margin: 13pt,
+  ], margin: 12pt,
 )
-#set columns(gutter: 0pt)
-#set text(12pt,font: "Arial", spacing: 50%, stretch: 10%)
+#set columns(gutter: 2pt)
+#set text(12pt, font: "Arial", spacing: 50%, stretch: 10%)
 #set list(spacing: 0pt, tight: true, body-indent: 0em)
 #set block(below: 0.5em)
 
@@ -104,8 +104,7 @@ L: left to right, LR: top or bottom, k: lookup amount\
 - creates metadata for classes and methods, variables, etc.
   - defines layouts for fields, variables, parameters
   - resolves references to methods, types and other assemblies → patching
-- initializes program
-  - interpreter or JIT
+- initializes program -> interpreter or JIT
 - optional: Code verification
 #text(blue)[*Interpreter*]\
 - interpreter loop
@@ -117,7 +116,7 @@ L: left to right, LR: top or bottom, k: lookup amount\
 - locals and parameters for active methods
 - method descriptor for active method
 - terms:
-  - activation frame -> data of current method
+  - activation frame -> data of current method, including its own evaluation stack
   - call stack -> stack of activation frames according to call order
     - call stack managed for interpreter -> unmanaged in HW
 #text(blue)[*Verification*]\
@@ -142,13 +141,12 @@ L: left to right, LR: top or bottom, k: lookup amount\
 - can only be done with metadata -> gc without it is not feasible!
   - behavior based gc have been tried, they do not work
 - solves dangling pointers and memory leaks
-- structure
-  + (mark phase)mark all objects in root set
-    - Pointer Rotation Algorithm from Deutsch-Schorr-Waite
-    - or just traverse recursive (requires more memory!)
-  + (sweep phase)if marked(linear scan), ignore, else free
-  - #text(purple)[Note, this requires the program(mutator) to stop running.]
-    - this is also the issue of a GC!
+- structure\
+  1: (mark phase)mark all objects in root set
+  - Pointer Rotation Algorithm
+  - or just traverse recursive (requires more memory!)
+  2: (sweep phase)if marked(linear scan), ignore, else free\
+  #text(purple)[Note, this requires the program(mutator) to stop running.]
 - root set
   - pointers in parameter, local variables, evaluation stack and this-reference
 #text(blue)[*Free List*]\
@@ -185,20 +183,19 @@ L: left to right, LR: top or bottom, k: lookup amount\
   - not possible without metadata
 - Incremental GC
   - ""parallel"" to program -> small increments of GC -> GO
-  - Generational GC
+  - Generational GC -> G2, G1, G0
     - old objects live longer
-    - G2, G1, G0
     - references from old to new
-    - if old is cleaned -> newer also needs to be cleaned
+    - if old is cleaned -> newer cleaned 
     - objects move from one generation to the other
     - write barriers when writing into references of other generations
   - Paritioned GC
     - move objects into an empty partition, sweep now fully garbage partition
+    - concurrent marking with a second mark phase that stops program
     - requires forwarding pointers for concurrent *evacuation* of objects
       - *and read barriers*!
 #text(blue)[*JIT*]\
-- hot spot -> code that is run again and again
-  - usually loops
+- hot spot -> code that is run again and again -> usually loops
   - checked with profiling -> how many times did i run this code -> increment
 #text(blue)[*Processor Registers*]\
 - local AL bit 0-7, AH bit 0-7, AX bit 0-15, EAX bit 0-31, RAX bit 0-63, RSP stack
@@ -211,9 +208,10 @@ L: left to right, LR: top or bottom, k: lookup amount\
 - register clobbering
   - some operations overwrite registers, make sure you saved values from there
     before (idiv -> RAX RDX)
+- op codes in smallj -> 1-p parameters -> p+1 - unlimited locals
 #text(blue)[*Code Optimization*]\
 - convert divisions, multiplications and modulo to bit operations -> cheaper
-- run expressions in code at compile time: 4 + 4 -> 8
+- run expressions in code at compile time
   - constant propagation -> can also apply to variables that do not change!
 - expressions that do not change in loops can be extracted into a variable -> no
   op
@@ -222,3 +220,8 @@ L: left to right, LR: top or bottom, k: lookup amount\
 - redundant code e.g. unnecessary variables removed and expression inlined,
   reversal of extraction
   - copy propagation
+- Static Single Assignment (SSA)
+  - re-assigment to new variable, this allows for numbering of variable
+  - if old variable is never used, drop
+- Peephole Optimization
+  - peek next op codes, substitution op
